@@ -8,6 +8,25 @@ import os
 from .models.schema import TripRequest
 from .utils.gemini import generate_trip_plan
 
+# A simple list of cities for suggestions.
+# In a real application, this could come from a database or a more extensive API.
+CITIES = [
+    "Mumbai", "Delhi", "Bangalore", "Hyderabad", "Ahmedabad", "Chennai", "Kolkata", "Surat", "Pune", "Jaipur",
+    "Lucknow", "Kanpur", "Nagpur", "Indore", "Thane", "Bhopal", "Visakhapatnam", "Patna", "Vadodara", "Ghaziabad",
+    "Ludhiana", "Agra", "Nashik", "Faridabad", "Meerut", "Rajkot", "Varanasi", "Srinagar", "Aurangabad", "Dhanbad",
+    "Amritsar", "Allahabad", "Ranchi", "Howrah", "Coimbatore", "Jabalpur", "Gwalior", "Vijayawada", "Jodhpur",
+    "Madurai", "Raipur", "Kota", "Guwahati", "Chandigarh", "Solapur", "Hubli-Dharwad", "Bareilly", "Moradabad",
+    "Mysore", "Gurgaon", "Aligarh", "Jalandhar", "Tiruchirappalli", "Bhubaneswar", "Salem", "Warangal", "Guntur",
+    "Bhiwandi", "Saharanpur", "Gorakhpur", "Bikaner", "Amravati", "Noida", "Jamshedpur", "Bhilai", "Cuttack",
+    "Firozabad", "Kochi", "Nellore", "Bhavnagar", "Dehradun", "Durgapur", "Asansol", "Rourkela", "Nanded",
+    "Kolhapur", "Ajmer", "Gulbarga", "Jamnagar", "Ujjain", "Loni", "Siliguri", "Jhansi", "Ulhasnagar", "Jammu",
+    "Sangli-Miraj & Kupwad", "Mangalore", "Erode", "Belgaum", "Ambattur", "Tirunelveli", "Malegaon", "Gaya",
+    "Jalgaon", "Udaipur", "Maheshtala",
+    "New York", "London", "Paris", "Tokyo", "Dubai", "Singapore", "Rome", "Barcelona", "Sydney", "Amsterdam",
+    "Bangkok", "Hong Kong", "Istanbul", "Vienna", "Prague", "Los Angeles", "San Francisco", "Chicago", "Toronto",
+    "Berlin", "Madrid", "Moscow", "Beijing", "Shanghai", "Seoul", "Kuala Lumpur", "Dublin", "Lisbon", "Athens"
+]
+
 def parse_plan(plan_text: str) -> dict:
     """Parses the raw text from the AI into a structured dictionary."""
     sections = {}
@@ -51,6 +70,16 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/cities/")
+def get_cities(q: str = ""):
+    """Provides a list of cities for autocomplete suggestions."""
+    if not q:
+        return []
+    
+    # Filter cities based on the query (case-insensitive) and return top 10 matches
+    suggestions = [city for city in CITIES if q.lower() in city.lower()]
+    return suggestions[:10]
 
 # Define the API endpoint directly in this file
 @app.post("/plan_trip/")

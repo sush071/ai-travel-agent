@@ -122,6 +122,66 @@ const ItineraryAccordion = ({ itinerary }) => {
   );
 };
 
+const AutocompleteInput = ({ id, name, label, value, onChange }) => {
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const wrapperRef = useRef(null);
+
+  // Debounce the fetch request to avoid sending too many API calls
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      if (value.length > 1) {
+        fetch(`/cities/?q=${value}`)
+          .then(res => res.json())
+          .then(data => {
+            setSuggestions(data);
+            setShowSuggestions(data.length > 0);
+          })
+          .catch(err => console.error("Failed to fetch cities:", err));
+      } else {
+        setSuggestions([]);
+        setShowSuggestions(false);
+      }
+    }, 250); // 250ms debounce delay
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value]);
+
+  // Handle clicks outside the component to close the suggestions list
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+        setShowSuggestions(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [wrapperRef]);
+
+  const handleSuggestionClick = (suggestion) => {
+    // Simulate an event object for the parent's handleChange
+    onChange({ target: { name, value: suggestion } });
+    setSuggestions([]);
+    setShowSuggestions(false);
+  };
+
+  return (
+    <div className="form-group autocomplete-wrapper" ref={wrapperRef}>
+      <input id={id} name={name} value={value} onChange={onChange} onFocus={() => value.length > 1 && setShowSuggestions(true)} placeholder=" " required autoComplete="off" />
+      <label htmlFor={id}>{label}</label>
+      {showSuggestions && suggestions.length > 0 && (
+        <ul className="suggestions-list">
+          {suggestions.map((suggestion, index) => ( <li key={index} onMouseDown={() => handleSuggestionClick(suggestion)} > {suggestion} </li> ))}
+        </ul>
+      )}
+    </div>
+  );
+};
+
 function App() {
   const [tripData, setTripData] = useState({
     from_city: "",
@@ -180,7 +240,7 @@ function App() {
       <nav className="navbar">
         <h1 className="logo">Lazytrip.xyz</h1>
         <div className="nav-buttons">
-          <a href="https://docs.google.com/forms/d/12SvzOvpECGYjpkHgz2lOrFb9VGM6vdzkH3aGHnCULaQ/edit" target="_blank" rel="noopener noreferrer" className="feedback-btn">
+          <a href="https://docs.google.com/forms/d/e/1FAIpQLSfp9-gKuWIiCxiMmR8A_Oxe1ERPaYODybmS7O8-FFQFVLRJ_A/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" className="feedback-btn">
             Feedback
           </a>
           <button className="menu-btn">
@@ -198,14 +258,18 @@ function App() {
       >
         <div className="hero-left">
           <form className="hero-form" onSubmit={handleSubmit}>
-            <div className="form-group">
-              <input id="from_city" name="from_city" value={tripData.from_city} onChange={handleChange} placeholder=" " required />
-              <label htmlFor="from_city">From (e.g., Mumbai)</label>
-            </div>
-            <div className="form-group">
-              <input id="destination_city" name="destination_city" value={tripData.destination_city} onChange={handleChange} placeholder=" " required />
-              <label htmlFor="destination_city">Destination (e.g., Paris)</label>
-            </div>
+            <AutocompleteInput
+              id="from_city"
+              name="from_city"
+              label="From (e.g., Mumbai)"
+              value={tripData.from_city}
+              onChange={handleChange} />
+            <AutocompleteInput
+              id="destination_city"
+              name="destination_city"
+              label="Destination (e.g., Paris)"
+              value={tripData.destination_city}
+              onChange={handleChange} />
             <div className="form-group">
               <input id="start_date" name="start_date" type="date" value={tripData.start_date} onChange={handleChange} placeholder=" " required />
               <label htmlFor="start_date">Start Date</label>
