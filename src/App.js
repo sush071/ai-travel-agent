@@ -66,16 +66,16 @@ const ItineraryAccordion = ({ itinerary }) => {
     if (!itinerary) return [];
     // Split the itinerary by day markers like "**Day 1:**" or "### Day 1:"
     // The lookahead `(?=...)` keeps the delimiter as part of the next string.
-    const dayChunks = itinerary.split(/\s*(?=\*\*Day \d+:|\#\#\# Day \d+:)/).filter(s => s.trim());
+    const dayChunks = itinerary.split(/\s*(?=\*\*Day \d+:|### Day \d+:)/).filter(s => s.trim());
 
     // If parsing fails to find day chunks (e.g., it's just a paragraph),
     // return an empty array to trigger the fallback to RenderContent.
-    if (dayChunks.length <= 1 && !itinerary.match(/^\s*(\*\*Day \d+:|\#\#\# Day \d+:)/)) {
+    if (dayChunks.length <= 1 && !itinerary.match(/^\s*(\*\*Day \d+:|### Day \d+:)/)) {
       return [];
     }
 
     // If the first chunk doesn't start with a day marker, it's likely intro text. Remove it.
-    if (dayChunks.length > 0 && !dayChunks[0].match(/^\s*(\*\*Day \d+:|\#\#\# Day \d+:)/)) {
+    if (dayChunks.length > 0 && !dayChunks[0].match(/^\s*(\*\*Day \d+:|### Day \d+:)/)) {
       dayChunks.shift();
     }
 
@@ -85,7 +85,7 @@ const ItineraryAccordion = ({ itinerary }) => {
       const contentLines = lines.slice(1);
       
       // Clean up title for display
-      const title = titleLine.replace(/\*\*|\#\#\#/g, '').trim();
+      const title = titleLine.replace(/\*\*|###/g, '').trim();
       const content = contentLines.join('\n');
 
       return { title, content };
