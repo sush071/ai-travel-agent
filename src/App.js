@@ -204,15 +204,13 @@ function App() {
               <input id="destination_city" name="destination_city" value={tripData.destination_city} onChange={handleChange} placeholder=" " required />
               <label htmlFor="destination_city">Destination (e.g., Paris)</label>
             </div>
-            <div className="form-row">
-              <div className="form-group">
-                <input id="start_date" name="start_date" type="date" value={tripData.start_date} onChange={handleChange} placeholder=" " required />
-                <label htmlFor="start_date">Start Date</label>
-              </div>
-              <div className="form-group">
-                <input id="duration_days" name="duration_days" value={tripData.duration_days} onChange={handleChange} placeholder=" " required />
-                <label htmlFor="duration_days">Duration (e.g., 7 days)</label>
-              </div>
+            <div className="form-group">
+              <input id="start_date" name="start_date" type="date" value={tripData.start_date} onChange={handleChange} placeholder=" " required />
+              <label htmlFor="start_date">Start Date</label>
+            </div>
+            <div className="form-group">
+              <input id="duration_days" name="duration_days" value={tripData.duration_days} onChange={handleChange} placeholder=" " required />
+              <label htmlFor="duration_days">Duration (e.g., 7 days)</label>
             </div>
             <div className="form-group">
               <input id="budget_inr" name="budget_inr" value={tripData.budget_inr} onChange={handleChange} placeholder=" " required />

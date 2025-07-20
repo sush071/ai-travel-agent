@@ -180,16 +180,6 @@ body {
   text-align: left;
 }
 
-.form-row {
-  display: flex;
-  gap: 1rem;
-}
-
-.form-row .form-group {
-  flex: 1;
-  margin-bottom: 1.25rem;
-}
-
 .hero-form label {
   position: absolute;
   left: 1rem;
