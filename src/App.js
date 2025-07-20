@@ -180,7 +180,9 @@ function App() {
       <nav className="navbar">
         <h1 className="logo">Lazytrip.xyz</h1>
         <div className="nav-buttons">
-          <button className="feedback-btn">Feedback</button>
+          <a href="https://docs.google.com/forms/d/12SvzOvpECGYjpkHgz2lOrFb9VGM6vdzkH3aGHnCULaQ/edit" target="_blank" rel="noopener noreferrer" className="feedback-btn">
+            Feedback
+          </a>
           <button className="menu-btn">
             <span className="menu-line"></span>
             <span className="menu-line"></span>
