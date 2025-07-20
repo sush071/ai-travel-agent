@@ -426,6 +426,8 @@ footer {
     flex-direction: column;
     min-height: auto;
     text-align: center;
+    padding-top: 7rem; /* Add space for the absolute navbar */
+    padding-bottom: 4rem; /* Add some bottom padding */
   }
 
   .hero-left {
